@@ -36,7 +36,6 @@ The fai script provides a set of functions to perform various tasks on a given f
 
 You can install or upgrade the FAI script by executing the following command in the terminal:
 
-```bash
 ./upgrade
 
 This will ensure you have the latest version of the script available for use.
