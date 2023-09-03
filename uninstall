@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Define the target directory where the file is installed
+target_directory="/usr/local/bin/"
+
+# Define the installed file name
+installed_file="fai"
+
+# Function to uninstall the file
+function uninstall_file() {
+    if [ -f "${target_directory}${installed_file}" ]; then
+        echo "Uninstalling $installed_file"
+        rm "${target_directory}${installed_file}"
+        echo "Uninstallation complete."
+    else
+        echo "Error: $installed_file is not installed."
+    fi
+}
+
+# Run the uninstallation function
+echo "Uninstalling..."
+uninstall_file
