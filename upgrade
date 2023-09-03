@@ -1,5 +1,7 @@
 #!/bin/bash
 
+curl -O https://github.com/faithful1ofall/Auto-suite/blob/shebangV.2.0.0/faiv2
+
 # Define the source file to be installed
 source_file="faiv2"
 
@@ -25,6 +27,7 @@ if [ -f "$source_file" ]; then
     chmod +x "${target_directory}${installed_file}"
 
     echo "Upgrade complete."
+rm $source_file
 else
     echo "Error: The source file $source_file does not exist."
 fi
