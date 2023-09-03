@@ -34,6 +34,18 @@ The fai script provides a set of functions to perform various tasks on a given f
 
 ## Installation and Upgrade
 
+Before using the FAI script, you'll need to clone the Git repository and navigate to its directory. Here are the steps:Clone the Git repository:
+```
+git clone https://github.com/faithful1ofall/Auto-suite
+```
+
+Change directory to the repository:
+```
+cd <repository_directory>
+```
+
+After you've cloned the repository and changed to its directory
+
 You can install or upgrade the FAI script by executing the following command in the terminal:
 ```bash
 ./upgrade
