@@ -59,13 +59,25 @@ fai [-a|--add-shebang] [-x|--make-executable] [-v|--vi] [-e|--emacs] [-t|--termi
 
 Here are some examples of how to use the FAI script:
 
-Add a shebang to a file: fai -a filename
+Add a shebang to a file: 
+```bash
+fai -a filename
+```
 
-Add a shebang and make a file executable: fai -a -x filename
+Add a shebang and make a file executable: 
+```bash
+fai -a -x filename
+```
 
 Edit a file with Vi: fai -v filename
 
-Add a shebang, make a file executable, and edit with Vi: fai -a -x -v filename
+Add a shebang, make a file executable, and edit with Vi: 
+```bash
+fai -a -x -v filename
+```
 
-Interactively edit a file in the terminal (mobile friendly)  with the -t option: fai -t filename
+Interactively edit a file in the terminal (mobile friendly)  with the -t option: 
+```bash
+fai -t filename
+```
 This command allows you to interactively add content to the file. To finish adding input and save the content, type FAI on a new line and press Enter.
