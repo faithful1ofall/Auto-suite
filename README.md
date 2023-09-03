@@ -41,7 +41,7 @@ git clone https://github.com/faithful1ofall/Auto-suite
 
 Change directory to the repository:
 ```
-cd <repository_directory>
+cd Auto-suite
 ```
 
 After you've cloned the repository and changed to its directory
