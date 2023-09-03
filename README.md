@@ -39,3 +39,34 @@ You can install or upgrade the FAI script by executing the following command in 
 ```bash
 ./upgrade
 
+This will ensure you have the latest version of the script available for use.
+
+## Usage
+
+To use the FAI script, you can run it from the command line with the following options:
+fai [-a|--add-shebang] [-x|--make-executable] [-v|--vi] [-e|--emacs] [-t|--terminal]
+
+-a or --add-shebang: Adds a shebang to the file.
+
+-x or --make-executable: Makes the file executable.
+
+-v or --vi: Edits the file with Vi.
+
+-e or --emacs: Edits the file with Emacs.
+
+-t or --terminal: Interactively adds content to the file in the terminal.
+
+## Example Usage
+
+Here are some examples of how to use the FAI script:
+
+Add a shebang to a file: fai -a filename
+
+Add a shebang and make a file executable: fai -a -x filename
+
+Edit a file with Vi: fai -v filename
+
+Add a shebang, make a file executable, and edit with Vi: fai -a -x -v filename
+
+Interactively edit a file in the terminal (mobile friendly)  with the -t option: fai -t filename
+This command allows you to interactively add content to the file. To finish adding input and save the content, type FAI on a new line and press Enter.
