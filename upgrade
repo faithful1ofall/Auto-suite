@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# Define the source file to be installed
+source_file="faiv2"
+
+# Define the target directory where you want to install the file
+target_directory="/usr/local/bin/"
+
+# Define the installed file name
+installed_file="fai"
+
+# Check if the source file exists
+if [ -f "$source_file" ]; then
+    # Check if the existing file in the target directory is named "fai"
+    if [ -f "${target_directory}${installed_file}" ]; then
+        echo "Replacing existing $installed_file" 
+        rm "${target_directory}${installed_file}"
+    fi
+
+    # Copy the source file to the target directory with the desired name
+    echo "Installing as $installed_file"
+    cp "$source_file" "${target_directory}${installed_file}"
+
+    # Make the installed file executable
+    chmod +x "${target_directory}${installed_file}"
+
+    echo "Upgrade complete."
+else
+    echo "Error: The source file $source_file does not exist."
+fi
