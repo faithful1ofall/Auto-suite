@@ -1,0 +1,112 @@
+#!/bin/bash
+
+# Function to add shebang
+add_shebang() {
+    file="$1"
+    shebang="#!/bin/bash"
+
+    # Check if the first line contains a shebang
+    if [ ! -f "$file" ] || ! head -n 1 "$file" | grep -q "$shebang"; then
+        # Add the shebang at the beginning of the file
+        tmpfile=$(mktemp)
+        echo "$shebang" > "$tmpfile"
+        [ -f "$file" ] && tail -n +2 "$file" >> "$tmpfile"
+        mv "$tmpfile" "$file"
+        echo "Shebang added to $file"
+    else
+        echo "Shebang already exists in $file"
+    fi
+}
+
+# Function to make the file executable
+make_executable() {
+    file="$1"
+    chmod +x "$file"
+    echo "$file is now executable."
+}
+
+# Function to edit file with Vi
+edit_with_vi() {
+    file="$1"
+    vi "$file"
+}
+
+# Function to edit file with Emacs
+edit_with_emacs() {
+    file="$1"
+    emacs "$file"
+}
+
+# Function to edit file in the terminal with prompt for second line
+edit_in_terminal() {
+    file="$1"
+    echo "Enter the second line of the file (type FAI on a new line to finish input):"
+    IFS=
+    while read -r line
+    do
+        if [ "$line" = "FAI" ]; then
+            break
+        fi
+        echo "$line" >> "$file"
+    done
+    echo "Content added to $file"
+}
+
+# Check if a filename was provided as an argument
+if [ $# -eq 0 ]; then
+    echo "Usage: [-a|--add-shebang] [-x|--make-executable] [-v|--vi] [-e|--emacs] [-t|--terminal] <filename>"
+    exit 1
+fi
+
+# Set initial values for flags
+add_shebang_flag=false
+make_executable_flag=false
+edit_with_vi_flag=false
+edit_with_emacs_flag=false
+edit_in_terminal_flag=false
+
+# Check for command-line arguments
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -a|--add-shebang)
+            add_shebang_flag=true
+            ;;
+        -x|--make-executable)
+            make_executable_flag=true
+            ;;
+        -v|--vi)
+            edit_with_vi_flag=true
+            ;;
+        -e|--emacs)
+            edit_with_emacs_flag=true
+            ;;
+        -t|--terminal)
+            edit_in_terminal_flag=true
+            ;;
+        *)
+            filename="$1"
+            ;;
+    esac
+    shift
+done
+
+# Perform actions based on flags
+if $add_shebang_flag; then
+    add_shebang "$filename"
+fi
+
+if $make_executable_flag; then
+    make_executable "$filename"
+fi
+
+if $edit_with_vi_flag; then
+    edit_with_vi "$filename"
+fi
+
+if $edit_with_emacs_flag; then
+    edit_with_emacs "$filename"
+fi
+
+if $edit_in_terminal_flag; then
+    edit_in_terminal "$filename"
+fi
