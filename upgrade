@@ -1,15 +1,52 @@
 #!/bin/bash
 
- 
 github_url="https://github.com/faithful1ofall/Auto-suite"
 # Define the source file to be installed
 source_file="faiv2"
 
-git clone -q "$github_url"
+# Function to display a text-based progress bar
+function progress_bar() {
+    local duration="$1"
+    local block="█"
+    local progress=""
+    local i
 
+    for ((i = 0; i < duration; i++)); do
+        progress+="█"
+    done
+
+    echo -ne "\r[$progress]"
+}
+
+# Clone the Git repository
+echo "Cloning the repository..."
+
+# Clone the repository in the background
+git clone -q "$github_url" &
+
+# Store the process ID of the background task
+bg_pid=$!
+
+# Set a counter to simulate progress
+counter=0
+
+# Display the progress bar while the cloning is in progress
+while kill -0 $bg_pid 2>/dev/null; do
+    progress_bar $counter
+    ((counter++))
+    sleep 1  # Adjust the sleep duration as needed
+done
+
+# Ensure the progress bar is complete
+progress_bar 100
+echo -e "\nClone complete."
+
+# Navigate into the cloned directory
 cd Auto-suite
 
-git checkout -q shebangV.2.0.0
+# Check out the desired branch
+branch_name="shebangV.2.0.0"
+git checkout -q "$branch_name"
 
 # Define the target directory where you want to install the file
 target_directory="/usr/local/bin/"
@@ -33,7 +70,7 @@ if [ -f "$source_file" ]; then
     chmod +x "${target_directory}${installed_file}"
 
     echo "Upgrade complete."
-rm ../Auto-suite
+    rm ../Auto-suite
 else
     echo "Error: The source file $source_file does not exist."
 fi
