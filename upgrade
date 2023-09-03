@@ -1,11 +1,15 @@
 #!/bin/bash
 
  
-github_url="https://github.com/faithful1ofall/Auto-suite/blob/shebangV.2.0.0/faiv2"
+github_url="https://github.com/faithful1ofall/Auto-suite"
 # Define the source file to be installed
 source_file="faiv2"
 
-curl -O "$github_url"
+git clone -q "$github_url"
+
+cd Auto-suite
+
+git checkout -q shebangV.2.0.0
 
 # Define the target directory where you want to install the file
 target_directory="/usr/local/bin/"
@@ -29,7 +33,7 @@ if [ -f "$source_file" ]; then
     chmod +x "${target_directory}${installed_file}"
 
     echo "Upgrade complete."
-rm $source_file
+rm ../Auto-suite
 else
     echo "Error: The source file $source_file does not exist."
 fi
