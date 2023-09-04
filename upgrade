@@ -49,7 +49,7 @@ branch_name="shebangV.2.0.0"
 git checkout -q "$branch_name"
 
 # Define the target directory where you want to install the file
-target_directory="/usr/local/bin/"
+target_directory="/bin/"
 
 # Define the installed file name
 installed_file="fai"
