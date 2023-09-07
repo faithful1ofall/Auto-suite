@@ -31,6 +31,11 @@ edit_with_vi() {
     vi "$file"
 }
 
+# Function to check code with betty
+check_betty() {
+    file="$1"
+    betty "$file"
+}
 # Function to edit file with Emacs
 edit_with_emacs() {
     file="$1"
@@ -54,7 +59,7 @@ edit_in_terminal() {
 
 # Check if a filename was provided as an argument
 if [ $# -eq 0 ]; then
-    echo "Usage: [-a|--add-shebang] [-x|--make-executable] [-v|--vi] [-e|--emacs] [-t|--terminal] <filename>"
+    echo "Usage: [-a|--add-shebang] [-x|--make-executable] [-v|--vi] [-b|--betty] [-e|--emacs] [-t|--terminal] <filename>"
     exit 1
 fi
 
@@ -64,6 +69,7 @@ make_executable_flag=false
 edit_with_vi_flag=false
 edit_with_emacs_flag=false
 edit_in_terminal_flag=false
+check_betty_flag=false
 
 # Check for command-line arguments
 while [[ $# -gt 0 ]]; do
@@ -73,6 +79,9 @@ while [[ $# -gt 0 ]]; do
             ;;
         -x|--make-executable)
             make_executable_flag=true
+            ;;
+        -b|--betty)
+            check_betty_flag=true
             ;;
         -v|--vi)
             edit_with_vi_flag=true
@@ -97,6 +106,10 @@ fi
 
 if $make_executable_flag; then
     make_executable "$filename"
+fi
+
+if $check_betty_flag; then
+    check_betty "$filename"
 fi
 
 if $edit_with_vi_flag; then
