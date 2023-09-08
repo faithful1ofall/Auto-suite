@@ -29,17 +29,14 @@ make_executable() {
 edit_with_vi() {
     file="$1"
     vi "$file"
+    touch "$file.edited"
 }
 
-# Function to check code with betty
-check_betty() {
-    file="$1"
-    betty "$file"
-}
 # Function to edit file with Emacs
 edit_with_emacs() {
     file="$1"
     emacs "$file"
+    touch "$file.edited"
 }
 
 # Function to edit file in the terminal with prompt for second line
@@ -55,11 +52,19 @@ edit_in_terminal() {
         echo "$line" >> "$file"
     done
     echo "Content added to $file"
+    touch "$file.edited"
 }
 
-# Check if a filename was provided as an argument
+# Function to check code with betty
+check_betty() {
+    file="$1"
+    betty "$file"
+    rm "$file.edited"
+}
+
+# Check if at least one filename was provided as an argument
 if [ $# -eq 0 ]; then
-    echo "Usage: [-a|--add-shebang] [-x|--make-executable] [-v|--vi] [-b|--betty] [-e|--emacs] [-t|--terminal] <filename>"
+    echo "Usage: [-a|--add-shebang] [-x|--make-executable] [-v|--vi] [-e|--emacs] [-t|--terminal] [-b|--betty] <filename1> [filename2] ..."
     exit 1
 fi
 
@@ -93,33 +98,38 @@ while [[ $# -gt 0 ]]; do
             edit_in_terminal_flag=true
             ;;
         *)
-            filename="$1"
+            filenames+=("$1")
             ;;
     esac
     shift
 done
 
-# Perform actions based on flags
-if $add_shebang_flag; then
-    add_shebang "$filename"
-fi
+# Perform actions based on flags for each file
+for file in "${filenames[@]}"; do
+    if $add_shebang_flag; then
+        add_shebang "$file"
+    fi
 
-if $make_executable_flag; then
-    make_executable "$filename"
-fi
+    if $make_executable_flag; then
+        make_executable "$file"
+    fi
 
-if $check_betty_flag; then
-    check_betty "$filename"
-fi
+    if $edit_with_vi_flag; then
+        edit_with_vi "$file" &
+    fi
 
-if $edit_with_vi_flag; then
-    edit_with_vi "$filename"
-fi
+    if $edit_with_emacs_flag; then
+        edit_with_emacs "$file" &
+    fi
 
-if $edit_with_emacs_flag; then
-    edit_with_emacs "$filename"
-fi
+    if $edit_in_terminal_flag; then
+        edit_in_terminal "$file" &
+    fi
 
-if $edit_in_terminal_flag; then
-    edit_in_terminal "$filename"
-fi
+    if $check_betty_flag; then
+        wait
+        if [ -f "$file.edited" ]; then
+            check_betty "$file"
+        fi
+    fi
+done
