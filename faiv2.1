@@ -1,0 +1,150 @@
+#!/bin/bash
+
+# Function to add shebang
+add_shebang() {
+    file="$1"
+    shebang="#!/bin/bash"
+
+    # Check if the first line contains a shebang
+    if [ ! -f "$file" ] || ! head -n 1 "$file" | grep -q "$shebang"; then
+        # Add the shebang at the beginning of the file
+        tmpfile=$(mktemp)
+        echo "$shebang" > "$tmpfile"
+        [ -f "$file" ] && tail -n +2 "$file" >> "$tmpfile"
+        mv "$tmpfile" "$file"
+        echo "Shebang added to $file"
+    else
+        echo "Shebang already exists in $file"
+    fi
+}
+
+# Function to make the file executable
+make_executable() {
+    file="$1"
+    chmod +x "$file"
+    echo "$file is now executable."
+}
+
+# Function to edit file with Vi
+edit_with_vi() {
+    file="$1"
+    vi "$file"
+    touch "$file.edited"
+}
+
+# Function to edit file with Emacs
+edit_with_emacs() {
+    file="$1"
+    emacs "$file"
+    touch "$file.edited"
+}
+
+# Function to edit file in the terminal with prompt for second line
+edit_in_terminal() {
+    file="$1"
+    echo "Enter the second line of the file (type FAI on a new line to finish input):"
+    IFS=
+    while read -r line
+    do
+        if [ "$line" = "FAI" ]; then
+            break
+        fi
+        echo "$line" >> "$file"
+    done
+    echo "Content added to $file"
+    touch "$file.edited"
+}
+
+# Function to check code with betty
+check_betty() {
+    file="$1"
+    betty "$file"
+    rm "$file.edited"
+}
+
+# Function to remove trailing spaces
+remove_trailing_spaces() {
+    file="$1"
+    sed -i 's/[[:space:]]*$//' "$file"
+    echo "Trailing spaces removed from $file"
+}
+
+# Check if at least one filename was provided as an argument
+if [ $# -eq 0 ]; then
+    echo "Usage: [-a|--add-shebang] [-x|--make-executable] [-v|--vi] [-e|--emacs] [-t|--terminal] [-b|--betty] [-s|--remove-trailing-spaces] <filename1> [filename2] ..."
+    exit 1
+fi
+
+# Set initial values for flags
+add_shebang_flag=false
+make_executable_flag=false
+edit_with_vi_flag=false
+edit_with_emacs_flag=false
+edit_in_terminal_flag=false
+check_betty_flag=false
+remove_trailing_spaces_flag=false
+
+# Check for command-line arguments
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -a|--add-shebang)
+            add_shebang_flag=true
+            ;;
+        -x|--make-executable)
+            make_executable_flag=true
+            ;;
+        -b|--betty)
+            check_betty_flag=true
+            ;;
+        -v|--vi)
+            edit_with_vi_flag=true
+            ;;
+        -e|--emacs)
+            edit_with_emacs_flag=true
+            ;;
+        -t|--terminal)
+            edit_in_terminal_flag=true
+            ;;
+        -s|--remove-trailing-spaces)
+            remove_trailing_spaces_flag=true
+            ;;
+        *)
+            filenames+=("$1")
+            ;;
+    esac
+    shift
+done
+
+# Perform actions based on flags for each file
+for file in "${filenames[@]}"; do
+    if $add_shebang_flag; then
+        add_shebang "$file"
+    fi
+
+    if $make_executable_flag; then
+        make_executable "$file"
+    fi
+
+    if $edit_with_vi_flag; then
+        edit_with_vi "$file" &
+    fi
+
+    if $edit_with_emacs_flag; then
+        edit_with_emacs "$file" &
+    fi
+
+    if $edit_in_terminal_flag; then
+        edit_in_terminal "$file" &
+    fi
+
+    if $check_betty_flag; then
+        wait
+        if [ -f "$file.edited" ]; then
+            check_betty "$file"
+        fi
+    fi
+
+    if $remove_trailing_spaces_flag; then
+        remove_trailing_spaces "$file"
+    fi
+done
